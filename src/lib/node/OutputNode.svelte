@@ -1,11 +1,12 @@
 <script lang="ts">
 	import * as Card from '$lib/components/ui/card';
+	import type { Exec, Graph } from '$lib/types/Graph';
 
 	const {
 		index,
-		links,
+		graph,
 		exec
-	}: { index: number; links: [number, number][]; exec: (value: string) => void } = $props();
+	}: { index: number; graph? : Graph, exec: Exec } = $props();
 </script>
 
 <Card.Root>

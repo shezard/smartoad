@@ -2,9 +2,9 @@
 	import * as Card from '$lib/components/ui/card';
 
 	import { Button } from '$lib/components/ui/button/index.js';
-	import { Play } from 'lucide-svelte';
+	import { LoaderCircle, Pause, Play } from 'lucide-svelte';
 	import Textarea from '$lib/components/ui/textarea/textarea.svelte';
-	import type { Graph, Link } from '$lib/types/Graph';
+	import type { Exec, Graph, Link } from '$lib/types/Graph';
 
 	const {
 		index,
@@ -13,18 +13,21 @@
 	}: {
 		index: number;
 		graph: Graph;
-		exec: (value: string, setOutput: (index: number, value: any) => void) => void;
+		exec: Exec;
 	} = $props();
 
 	let value = $state('Some text');
+    let isLoading = $state(false);
 
-	const setOutput = function (outputIndex: number, value: any) {
+	async function setOutput(outputIndex: number, value: any) {
 		const outputNodeIndex = getOutputNodeIndex(graph.links, index, outputIndex);
 		if (!outputNodeIndex) {
 			return;
 		}
 
-		graph.nodes[outputNodeIndex].props.exec(value);
+        isLoading = true;
+		await graph.nodes[outputNodeIndex].props.exec(value);
+        isLoading = false;
 	};
 
 	function getOutputNodeIndex(links: Link[], index: number, outputIndex: number) {
@@ -53,8 +56,12 @@
 	</Card.Header>
 	<Card.Content class="flex flex-col gap-2">
 		<Textarea bind:value></Textarea>
-		<Button variant="outline" size="icon">
-			<Play class="h-4 w-4" onclick={() => exec(value, setOutput)} />
+		<Button variant="outline" size="icon" onclick={() => !isLoading && exec(value, setOutput)}>
+            {#if isLoading}
+                <LoaderCircle class="h-4 w-4 animate-spin" />
+            {:else}
+                <Play class="h-4 w-4" />
+            {/if}
 		</Button>
 	</Card.Content>
 </Card.Root>

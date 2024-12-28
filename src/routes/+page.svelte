@@ -11,7 +11,7 @@
 			{
 				component: PromptNode,
 				props: {
-					exec: (value: string, setOutput: (index: number, value: any) => void) =>
+					exec: (value: string, setOutput: (index: number, value: string) => void) =>
 						setOutput(0, value)
 				}
 			},
@@ -19,7 +19,12 @@
 				component: OutputNode,
 				props: {
 					exec: (value: string) => {
-						output = value;
+                        return new Promise((resolve) => {
+                            setTimeout(() => {
+                                output = value;
+                                resolve();
+                            }, 2000);
+                        })
 					}
 				}
 			}
@@ -37,11 +42,7 @@
 	<div class="grid h-full grid-cols-12">
 		<div class="col-start-1 col-end-11">
 			<pre>
-                - Un header
-                - Un space pour les nodes
-                    - une node playable
-                        - quand j'appuis sur play -> j'exec et je passe a la node suivante
-                    - une node output
+                - une node output
                     - lien entre playable et output
                 - Un left panel scrollable
                     - par default affiche le contenu de output
