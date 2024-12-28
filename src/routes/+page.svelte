@@ -3,6 +3,7 @@
 	import PromptNode from '$lib/node/PromptNode.svelte';
 	import { askQuestion } from '$lib/ollama';
 	import type { Graph } from '$lib/types/Graph';
+	import grid from '$lib/actions/grid';
 
 	let nodeStates = $state([
 		{
@@ -61,7 +62,7 @@
 	</div>
 	<div class="grid grid-cols-12 divide-x">
 		<div class="col-start-1 col-end-11">
-			<div class="m-4 grid grid-cols-4 gap-4">
+			<div class="grid-stack m-4" use:grid>
 				{#each graph.nodes as node, index}
 					<node.component {index} {...node.props} {...nodeStates[index]} />
 				{/each}
