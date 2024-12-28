@@ -1,33 +1,43 @@
 <script lang="ts">
 	import Link from '$lib/Link.svelte';
-	import OutputNode from '$lib/node/OutputNode.svelte';
+	import BasicNode from '$lib/node/BasicNode.svelte';
 	import PromptNode from '$lib/node/PromptNode.svelte';
 	import type { Graph } from '$lib/types/Graph';
 
-	let output = $state('');
+    let nodeStates = $state([{
+        value: 'Your text',
+        isLoading: false,
+    }, {
+        value: null,
+        isLoading: false,
+    }])
 
 	const graph = {
 		nodes: [
 			{
 				component: PromptNode,
 				props: {
-					exec: (value: string, setOutput: (index: number, value: string) => void) =>
-						setOutput(0, value)
+					exec: (value: string) => {
+                        console.log('prompt', value)
+                        nodeStates[1] = {
+                            isLoading: false,
+                            value: value,
+                        }
+                    }
 				}
 			},
-			{
-				component: OutputNode,
-				props: {
+            {
+                component: BasicNode,
+                props: {
 					exec: (value: string) => {
-                        return new Promise((resolve) => {
-                            setTimeout(() => {
-                                output = value;
-                                resolve();
-                            }, 2000);
-                        })
-					}
+                        console.log('basic', value)
+                        nodeStates[2] = {
+                            isLoading: false,
+                            value: value,
+                        }
+                    }
 				}
-			}
+            }
 		],
 		links: [[0, 1]]
 	} satisfies Graph;
@@ -49,7 +59,7 @@
             </pre>
 			<div class="m-4 flex flex-col gap-2">
 				{#each graph.nodes as node, index}
-					<node.component {index} {graph} {...node.props} />
+					<node.component {index} {...node.props} {...nodeStates[index] }/>
 				{/each}
 				{#each graph.links as [start, end]}
 					<Link {start} {end} />
@@ -59,7 +69,7 @@
 		<div class="col-start-11 col-end-13">
 			Side panel
 			<div>
-				{output}
+				{nodeStates[nodeStates.length - 1].value}
 			</div>
 		</div>
 	</div>

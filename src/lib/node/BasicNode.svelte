@@ -3,7 +3,6 @@
 
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { LoaderCircle, Play } from 'lucide-svelte';
-	import Textarea from '$lib/components/ui/textarea/textarea.svelte';
 	import type { Exec, Graph, Link } from '$lib/types/Graph';
 
 	let {
@@ -22,12 +21,12 @@
 <Card.Root>
 	<Card.Header>
 		<Card.Title>
-			Prompt Node
+			Basic Node
 			<span class="text-sm text-muted">{index}</span>
 		</Card.Title>
 	</Card.Header>
 	<Card.Content class="flex flex-col gap-2">
-		<Textarea bind:value></Textarea>
+        Input: {value}
 		<Button variant="outline" size="icon" onclick={() => !isLoading && exec(value)}>
 			{#if isLoading}
 				<LoaderCircle class="h-4 w-4 animate-spin" />
