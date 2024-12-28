@@ -26,8 +26,12 @@
 		// 	return;
 		// }
 
+        if(!value) {
+            return;
+        }
+
 		isLoading = true;
-		await exec(value);
+		await exec(value, index);
 		lastValue = value;
 		isLoading = false;
 	}

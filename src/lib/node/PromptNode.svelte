@@ -28,7 +28,7 @@
 	</Card.Header>
 	<Card.Content class="flex flex-col gap-2">
 		<Textarea bind:value></Textarea>
-		<Button variant="outline" size="icon" onclick={() => !isLoading && exec(value)}>
+		<Button variant="outline" size="icon" onclick={() => !isLoading && exec(value, index)}>
 			{#if isLoading}
 				<LoaderCircle class="h-4 w-4 animate-spin" />
 			{:else}

@@ -2,6 +2,7 @@
 	import Link from '$lib/Link.svelte';
 	import BasicNode from '$lib/node/BasicNode.svelte';
 	import PromptNode from '$lib/node/PromptNode.svelte';
+	import { askQuestion } from '$lib/ollama';
 	import type { Graph } from '$lib/types/Graph';
 
 	let nodeStates = $state([
@@ -21,22 +22,38 @@
 			{
 				component: PromptNode,
 				props: {
-					exec: (value: string) => {
-						console.log('prompt', value);
-						nodeStates[1] = {
+					exec: (value: string, index: number) => {
+						nodeStates[index + 1] = {
 							value: value
 						};
 					}
 				}
 			},
+            {
+                component: BasicNode,
+                props: {
+                    exec: (value, index) => {
+                        let text = '';
+                        return new Promise((resolve) => {
+                            askQuestion(value, (part: string) => {
+                                text += part;
+                            }, () => {
+                                nodeStates[index + 1] = {
+									value: text
+								};
+                                resolve();
+                            });
+                        });
+                    }
+                }
+            },
 			{
 				component: BasicNode,
 				props: {
-					exec: (value: string) => {
+					exec: (value: string, index: number) => {
 						return new Promise((resolve) => {
 							setTimeout(() => {
-								console.log('basic', value);
-								nodeStates[2] = {
+								nodeStates[index + 1] = {
 									value: value
 								};
 								resolve();
@@ -46,7 +63,7 @@
 				}
 			}
 		],
-		links: [[0, 1]]
+		links: [[0, 1], [1, 2]]
 	} satisfies Graph;
 </script>
 
