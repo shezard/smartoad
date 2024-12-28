@@ -10,23 +10,27 @@
 	let {
 		index,
 		exec,
-		isLoading,
 		value = $bindable()
 	}: {
 		index: number;
 		exec: Exec;
-		isLoading: boolean;
 		value: string;
 	} = $props();
 
-	$effect(() => {
-		if (value === lastValue) {
-			return;
-		}
+	let isLoading = $state(false);
 
-		exec(value);
+	$effect(callExec);
+
+	async function callExec() {
+		// if (value === lastValue) { // Maybe we really need it, not sure yet
+		// 	return;
+		// }
+
+		isLoading = true;
+		await exec(value);
 		lastValue = value;
-	});
+		isLoading = false;
+	}
 </script>
 
 <Card.Root>
@@ -38,7 +42,7 @@
 	</Card.Header>
 	<Card.Content class="flex flex-col gap-2">
 		Input: {value}
-		<Button variant="outline" size="icon" onclick={() => !isLoading && exec(value)}>
+		<Button variant="outline" size="icon" onclick={() => !isLoading && callExec()}>
 			{#if isLoading}
 				<LoaderCircle class="h-4 w-4 animate-spin" />
 			{:else}

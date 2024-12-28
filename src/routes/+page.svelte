@@ -6,16 +6,13 @@
 
 	let nodeStates = $state([
 		{
-			value: 'Your text',
-			isLoading: false
+			value: 'Your text'
 		},
 		{
-			value: null,
-			isLoading: false
+			value: null
 		},
 		{
-			value: null,
-			isLoading: false
+			value: null
 		}
 	]);
 
@@ -27,7 +24,6 @@
 					exec: (value: string) => {
 						console.log('prompt', value);
 						nodeStates[1] = {
-							isLoading: false,
 							value: value
 						};
 					}
@@ -37,11 +33,15 @@
 				component: BasicNode,
 				props: {
 					exec: (value: string) => {
-						console.log('basic', value);
-						nodeStates[2] = {
-							isLoading: false,
-							value: value
-						};
+						return new Promise((resolve) => {
+							setTimeout(() => {
+								console.log('basic', value);
+								nodeStates[2] = {
+									value: value
+								};
+								resolve();
+							}, 2000);
+						});
 					}
 				}
 			}
@@ -50,21 +50,13 @@
 	} satisfies Graph;
 </script>
 
-<div class="container h-screen">
-	<div class="flex flex-col gap-2">
-		<div class="m-4 flex flex-row items-center justify-items-center gap-2">
-			<span class="text-2xl text-lime-200">Assistoad</span> 🍄 Your personnal assistant 🍄
-		</div>
+<div class="h-full divide-y">
+	<div class="m-4 flex flex-row items-center justify-items-center gap-2">
+		<span class="text-2xl text-lime-200">Smartoad</span> 🐸 Graphing tool 🐸
 	</div>
-	<div class="grid h-full grid-cols-12">
+	<div class="grid h-full grid-cols-12 divide-x">
 		<div class="col-start-1 col-end-11">
-			<pre>
-                - une node output
-                    - lien entre playable et output
-                - Un left panel scrollable
-                    - par default affiche le contenu de output
-            </pre>
-			<div class="m-4 flex flex-col gap-2">
+			<div class="m-4 flex flex-col gap-4">
 				{#each graph.nodes as node, index}
 					<node.component {index} {...node.props} {...nodeStates[index]} />
 				{/each}
@@ -74,8 +66,8 @@
 			</div>
 		</div>
 		<div class="col-start-11 col-end-13">
-			Side panel
-			<div>
+			<div class="m-4">
+				Side panel<br />
 				{nodeStates[nodeStates.length - 1].value}
 			</div>
 		</div>

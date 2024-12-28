@@ -4,19 +4,19 @@
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { LoaderCircle, Play } from 'lucide-svelte';
 	import Textarea from '$lib/components/ui/textarea/textarea.svelte';
-	import type { Exec, Graph, Link } from '$lib/types/Graph';
+	import type { Exec } from '$lib/types/Graph';
 
 	let {
 		index,
 		exec,
-		isLoading,
 		value = $bindable()
 	}: {
 		index: number;
 		exec: Exec;
-		isLoading: boolean;
 		value: string;
 	} = $props();
+
+	let isLoading = $state(false);
 </script>
 
 <Card.Root>
