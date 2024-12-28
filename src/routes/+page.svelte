@@ -1,5 +1,4 @@
 <script lang="ts">
-	import Link from '$lib/Link.svelte';
 	import BasicNode from '$lib/node/BasicNode.svelte';
 	import PromptNode from '$lib/node/PromptNode.svelte';
 	import { askQuestion } from '$lib/ollama';
@@ -60,10 +59,7 @@
 	<div class="m-4 flex flex-row items-center justify-items-center gap-2">
 		<span class="text-2xl text-lime-200">Smartoad</span> 🐸 Graphing tool 🐸
 	</div>
-	<div class="relative grid grid-cols-12 divide-x">
-		{#each graph.links as [start, end]}
-			<Link {start} {end} />
-		{/each}
+	<div class="grid grid-cols-12 divide-x">
 		<div class="col-start-1 col-end-11">
 			<div class="m-4 grid grid-cols-4 gap-4">
 				{#each graph.nodes as node, index}
