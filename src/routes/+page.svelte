@@ -4,13 +4,20 @@
 	import PromptNode from '$lib/node/PromptNode.svelte';
 	import type { Graph } from '$lib/types/Graph';
 
-    let nodeStates = $state([{
-        value: 'Your text',
-        isLoading: false,
-    }, {
-        value: null,
-        isLoading: false,
-    }])
+	let nodeStates = $state([
+		{
+			value: 'Your text',
+			isLoading: false
+		},
+		{
+			value: null,
+			isLoading: false
+		},
+		{
+			value: null,
+			isLoading: false
+		}
+	]);
 
 	const graph = {
 		nodes: [
@@ -18,26 +25,26 @@
 				component: PromptNode,
 				props: {
 					exec: (value: string) => {
-                        console.log('prompt', value)
-                        nodeStates[1] = {
-                            isLoading: false,
-                            value: value,
-                        }
-                    }
+						console.log('prompt', value);
+						nodeStates[1] = {
+							isLoading: false,
+							value: value
+						};
+					}
 				}
 			},
-            {
-                component: BasicNode,
-                props: {
+			{
+				component: BasicNode,
+				props: {
 					exec: (value: string) => {
-                        console.log('basic', value)
-                        nodeStates[2] = {
-                            isLoading: false,
-                            value: value,
-                        }
-                    }
+						console.log('basic', value);
+						nodeStates[2] = {
+							isLoading: false,
+							value: value
+						};
+					}
 				}
-            }
+			}
 		],
 		links: [[0, 1]]
 	} satisfies Graph;
@@ -59,7 +66,7 @@
             </pre>
 			<div class="m-4 flex flex-col gap-2">
 				{#each graph.nodes as node, index}
-					<node.component {index} {...node.props} {...nodeStates[index] }/>
+					<node.component {index} {...node.props} {...nodeStates[index]} />
 				{/each}
 				{#each graph.links as [start, end]}
 					<Link {start} {end} />

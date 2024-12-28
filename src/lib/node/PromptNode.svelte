@@ -9,13 +9,13 @@
 	let {
 		index,
 		exec,
-        isLoading,
-        value = $bindable(),
+		isLoading,
+		value = $bindable()
 	}: {
 		index: number;
 		exec: Exec;
-        isLoading: boolean;
-        value: string;
+		isLoading: boolean;
+		value: string;
 	} = $props();
 </script>
 

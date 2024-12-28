@@ -3,19 +3,30 @@
 
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { LoaderCircle, Play } from 'lucide-svelte';
-	import type { Exec, Graph, Link } from '$lib/types/Graph';
+	import type { Exec } from '$lib/types/Graph';
+
+	let lastValue: string | null = null;
 
 	let {
 		index,
 		exec,
-        isLoading,
-        value = $bindable(),
+		isLoading,
+		value = $bindable()
 	}: {
 		index: number;
 		exec: Exec;
-        isLoading: boolean;
-        value: string;
+		isLoading: boolean;
+		value: string;
 	} = $props();
+
+	$effect(() => {
+		if (value === lastValue) {
+			return;
+		}
+
+		exec(value);
+		lastValue = value;
+	});
 </script>
 
 <Card.Root>
@@ -26,7 +37,7 @@
 		</Card.Title>
 	</Card.Header>
 	<Card.Content class="flex flex-col gap-2">
-        Input: {value}
+		Input: {value}
 		<Button variant="outline" size="icon" onclick={() => !isLoading && exec(value)}>
 			{#if isLoading}
 				<LoaderCircle class="h-4 w-4 animate-spin" />
