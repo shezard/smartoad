@@ -29,62 +29,52 @@
 					}
 				}
 			},
-            {
-                component: BasicNode,
-                props: {
-                    exec: (value, index) => {
-                        let text = '';
-                        return new Promise((resolve) => {
-                            askQuestion(value, (part: string) => {
-                                text += part;
-                            }, () => {
-                                nodeStates[index + 1] = {
-									value: text
-								};
-                                resolve();
-                            });
-                        });
-                    }
-                }
-            },
 			{
 				component: BasicNode,
 				props: {
-					exec: (value: string, index: number) => {
+					exec: (value, index) => {
+						let text = '';
 						return new Promise((resolve) => {
-							setTimeout(() => {
-								nodeStates[index + 1] = {
-									value: value
-								};
-								resolve();
-							}, 2000);
+							askQuestion(
+								value,
+								(part: string) => {
+									text += part;
+								},
+								() => {
+									nodeStates[index + 1] = {
+										value: text
+									};
+									resolve();
+								}
+							);
 						});
 					}
 				}
 			}
 		],
-		links: [[0, 1], [1, 2]]
+		links: [[0, 1]]
 	} satisfies Graph;
 </script>
 
-<div class="h-full divide-y">
+<div class="divide-y">
 	<div class="m-4 flex flex-row items-center justify-items-center gap-2">
 		<span class="text-2xl text-lime-200">Smartoad</span> 🐸 Graphing tool 🐸
 	</div>
-	<div class="grid h-full grid-cols-12 divide-x">
+	<div class="relative grid grid-cols-12 divide-x">
+		{#each graph.links as [start, end]}
+			<Link {start} {end} />
+		{/each}
 		<div class="col-start-1 col-end-11">
-			<div class="m-4 flex flex-col gap-4">
+			<div class="m-4 grid grid-cols-4 gap-4">
 				{#each graph.nodes as node, index}
 					<node.component {index} {...node.props} {...nodeStates[index]} />
-				{/each}
-				{#each graph.links as [start, end]}
-					<Link {start} {end} />
 				{/each}
 			</div>
 		</div>
 		<div class="col-start-11 col-end-13">
 			<div class="m-4">
-				Side panel<br />
+				Output
+				<br />
 				{nodeStates[nodeStates.length - 1].value}
 			</div>
 		</div>

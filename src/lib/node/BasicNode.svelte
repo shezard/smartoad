@@ -26,9 +26,9 @@
 		// 	return;
 		// }
 
-        if(!value) {
-            return;
-        }
+		if (!value) {
+			return;
+		}
 
 		isLoading = true;
 		await exec(value, index);
@@ -37,7 +37,7 @@
 	}
 </script>
 
-<Card.Root>
+<Card.Root id="node-{index}">
 	<Card.Header>
 		<Card.Title>
 			Basic Node

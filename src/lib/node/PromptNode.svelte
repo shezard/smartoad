@@ -19,7 +19,7 @@
 	let isLoading = $state(false);
 </script>
 
-<Card.Root>
+<Card.Root id="node-{index}">
 	<Card.Header>
 		<Card.Title>
 			Prompt Node
