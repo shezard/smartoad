@@ -6,11 +6,11 @@ export function abortQuestion() {
 }
 
 export async function askQuestion(
-	prompt: string,
+	prompt: string | null,
 	onChunk: (part: string) => void,
 	onDone: () => void
 ) {
-	if (prompt === '') {
+	if (prompt === null || prompt === '') {
 		throw new Error('Question is empty');
 	}
 	const url = 'http://localhost:11434/api/generate';

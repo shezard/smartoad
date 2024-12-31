@@ -52,6 +52,7 @@
 	},
 	"dependencies": {
 		"gridstack": "^11.1.2",
+		"lodash": "^4.17.21",
 		"lucide": "^0.469.0",
 		"lucide-svelte": "^0.469.0"
 	}

@@ -1,10 +1,8 @@
-import BasicNode from '$lib/node/BasicNode.svelte';
-import PromptNode from '$lib/node/PromptNode.svelte';
 import { askQuestion } from '$lib/ollama';
 
 export type Graph = {
 	nodes: {
-		component: any;
+		type: 'prompt' | 'basic';
 		props: {
 			exec: Exec;
 		};
@@ -14,15 +12,15 @@ export type Graph = {
 
 export type Link = [number, number];
 
-export type Exec = (value: string, index: number) => void | Promise<void>;
+export type Exec = (value: string | null, index: number) => void | Promise<void>;
 
 export function createGraph(nodeStates) {
 	return {
 		nodes: [
 			{
-				component: PromptNode,
+				type: 'prompt',
 				props: {
-					exec: (value: string, index: number) => {
+					exec: (value, index) => {
 						nodeStates[index + 1] = {
 							value: value
 						};
@@ -30,7 +28,7 @@ export function createGraph(nodeStates) {
 				}
 			},
 			{
-				component: BasicNode,
+				type: 'basic',
 				props: {
 					exec: (value, index) => {
 						let text = '';
@@ -51,15 +49,28 @@ export function createGraph(nodeStates) {
 					}
 				}
 			},
-            {
-				component: BasicNode,
+			{
+				type: 'basic',
 				props: {
-					exec: (value: string, index: number) => {
-						// no-op
+					exec: (_, __) => {
+						return Promise.resolve();
+					}
+				}
+			},
+			{
+				type: 'basic',
+				props: {
+					exec: (_, __) => {
+						return Promise.resolve();
 					}
 				}
 			}
 		],
-		links: [[0, 1], [1, 2]]
+		links: [
+			[0, 1],
+			[0, 2],
+			[1, 3],
+			[2, 3]
+		]
 	} satisfies Graph;
 }

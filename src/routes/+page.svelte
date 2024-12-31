@@ -1,11 +1,12 @@
 <script lang="ts">
 	import { createGraph } from '$lib/graph';
-	import grid from '$lib/actions/grid';
 	import canvas from '$lib/actions/canvas';
+	import Textarea from '$lib/components/ui/textarea/textarea.svelte';
+	import UniversalNode from '$lib/node/UniversalNode.svelte';
 
 	let nodeStates = $state([
 		{
-			value: 'Your text'
+			value: null
 		},
 		{
 			value: null
@@ -14,6 +15,8 @@
 			value: null
 		}
 	]);
+
+	let selectedNodeIndex = $state(0);
 
 	const graph = createGraph(nodeStates);
 </script>
@@ -24,9 +27,15 @@
 	</div>
 	<div class="grid h-screen w-full grid-cols-12 divide-x">
 		<div class="relative col-start-1 col-end-11">
-			<div class="grid-stack m-4" use:grid>
+			<div class="m-4 grid grid-cols-10 gap-4">
 				{#each graph.nodes as node, index}
-					<node.component {index} {...node.props} {...nodeStates[index]} />
+					<UniversalNode
+						{index}
+						bind:selectedNodeIndex
+						type={node.type}
+						{...node.props}
+						{...nodeStates[index]}
+					/>
 				{/each}
 			</div>
 			<canvas
@@ -35,10 +44,17 @@
 			></canvas>
 		</div>
 		<div class="col-start-11 col-end-13">
-			<div class="m-4">
-				Output
-				<br />
-				{nodeStates[nodeStates.length - 1].value}
+			<div class="m-4 flex flex-col gap-2">
+				<div class="capitalize">
+					{graph.nodes[selectedNodeIndex].type}
+				</div>
+				<div>
+					{#if graph.nodes[selectedNodeIndex].type === 'prompt'}
+						<Textarea bind:value={nodeStates[selectedNodeIndex].value} />
+					{:else}
+						{nodeStates[selectedNodeIndex].value}
+					{/if}
+				</div>
 			</div>
 		</div>
 	</div>

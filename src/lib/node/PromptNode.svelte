@@ -3,15 +3,16 @@
 
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { LoaderCircle, Play, Circle } from 'lucide-svelte';
-	import Textarea from '$lib/components/ui/textarea/textarea.svelte';
 	import type { Exec } from '$lib/graph';
 
 	let {
 		index,
+		selectedNodeIndex = $bindable(),
 		exec,
 		value = $bindable()
 	}: {
 		index: number;
+		selectedNodeIndex: number;
 		exec: Exec;
 		value: string;
 	} = $props();
@@ -19,7 +20,13 @@
 	let isLoading = $state(false);
 </script>
 
-<Card.Root id="node-{index}">
+<Card.Root
+	id="node-{index}"
+	class={index === selectedNodeIndex ? 'border-lime-200' : ''}
+	onclick={() => {
+		selectedNodeIndex = index;
+	}}
+>
 	<Card.Header>
 		<Card.Title>
 			<div class="inline-flex w-full items-center gap-2">
@@ -32,7 +39,7 @@
 		</Card.Title>
 	</Card.Header>
 	<Card.Content class="flex flex-col gap-2">
-		<Textarea bind:value></Textarea>
+		<!-- <Textarea bind:value></Textarea> -->
 		<Button variant="outline" size="icon" onclick={() => !isLoading && exec(value, index)}>
 			{#if isLoading}
 				<LoaderCircle class="h-4 w-4 animate-spin" />
