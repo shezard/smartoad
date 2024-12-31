@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { createGraph } from '$lib/graph';
+	import { createGraph, type NodeState } from '$lib/graph';
 	import canvas from '$lib/actions/canvas';
 	import Textarea from '$lib/components/ui/textarea/textarea.svelte';
 	import UniversalNode from '$lib/node/UniversalNode.svelte';
 
-	let nodeStates = $state([]);
+	let nodeStates : NodeState[] = $state([]);
 
-	function updater(updatedNodeStates) {
+	function updater(updatedNodeStates: NodeState[]) {
 		nodeStates = updatedNodeStates;
 		return nodeStates;
 	}

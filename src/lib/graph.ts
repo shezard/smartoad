@@ -12,7 +12,7 @@ export type Graph = {
 
 export type Link = [number, number];
 
-export type Exec = (values: string[], index: number) => void | Promise<void>;
+export type Exec = (index: number) => void | Promise<void>;
 
 export type NodeState = { values: string[] };
 
@@ -25,7 +25,7 @@ export function createGraph(
 			{
 				type: 'prompt',
 				props: {
-					exec: (values, index) => {
+					exec: (index) => {
 						const value = getValue(index, 0);
 						setOutput(index, 0, value);
 						setOutput(index, 1, value);
@@ -35,7 +35,7 @@ export function createGraph(
 			{
 				type: 'basic',
 				props: {
-					exec: (values, index) => {
+					exec: (index) => {
 						let text = '';
 						return new Promise((resolve) => {
 							const value = getValue(index, 0);
@@ -56,7 +56,7 @@ export function createGraph(
 			{
 				type: 'basic',
 				props: {
-					exec: (_, index) => {
+					exec: (index) => {
 						const value = getValue(index, 0);
 						setOutput(index, 0, 'some stuff');
 						return Promise.resolve();
@@ -66,7 +66,7 @@ export function createGraph(
 			{
 				type: 'basic',
 				props: {
-					exec: (_, index) => {
+					exec: (index) => {
 						const value0 = getValue(index, 0);
 						const value1 = getValue(index, 1);
 						return Promise.resolve();

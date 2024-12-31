@@ -31,7 +31,7 @@
 		}
 
 		isLoading = true;
-		exec(values, index)
+		exec(index)
 			?.then(() => {
 				lastValues = values;
 				isLoading = false;
@@ -67,7 +67,7 @@
 				<Circle class="h-2 w-2" id="input-{index}" />
 			</div>
 		</div>
-		<Button variant="outline" size="icon" onclick={() => !isLoading && exec(values, index)}>
+		<Button variant="outline" size="icon" onclick={() => !isLoading && exec(index)}>
 			{#if isLoading}
 				<LoaderCircle class="h-4 w-4 animate-spin" />
 			{:else}
