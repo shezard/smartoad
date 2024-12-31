@@ -46,7 +46,7 @@
 	</Card.Header>
 	<Card.Content class="flex flex-col gap-2">
         <div class="flex flex-row gap-2 items-center">
-            <Circle class="h-2 w-2" /> Input: {value}
+            <Circle class="h-2 w-2" id="input-{index}"/> Input: {value}
         </div>
 		<Button variant="outline" size="icon" onclick={() => !isLoading && callExec()}>
 			{#if isLoading}

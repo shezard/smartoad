@@ -26,7 +26,7 @@
                 <span>Prompt Node</span>
                 <span class="text-sm text-muted">{index}</span>
                 <span class="ml-auto">
-                    <Circle class="h-2 w-2" />
+                    <Circle class="h-2 w-2" id="output-{index}"/>
                 </span>
             </div>
 		</Card.Title>

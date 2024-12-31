@@ -4,6 +4,7 @@
 	import { askQuestion } from '$lib/ollama';
 	import type { Graph } from '$lib/types/Graph';
 	import grid from '$lib/actions/grid';
+	import canvas from '$lib/actions/canvas';
 
 	let nodeStates = $state([
 		{
@@ -60,13 +61,17 @@
 	<div class="m-4 flex flex-row items-center justify-items-center gap-2">
 		<span class="text-2xl text-lime-200">Smartoad</span> 🐸 Graphing tool 🐸
 	</div>
-	<div class="grid grid-cols-12 divide-x">
-		<div class="col-start-1 col-end-11">
-			<div class="grid-stack m-4" use:grid>
-				{#each graph.nodes as node, index}
-					<node.component {index} {...node.props} {...nodeStates[index]} />
+	<div class="grid grid-cols-12 divide-x h-screen w-full">
+        <div class="col-start-1 col-end-11 relative">
+            <div class="grid-stack m-4" use:grid>
+                {#each graph.nodes as node, index}
+                <node.component {index} {...node.props} {...nodeStates[index]} />
 				{/each}
 			</div>
+            <canvas
+                class="absolute top-0 left-0 h-full w-full bg-transparent pointer-events-none"
+                use:canvas={graph}
+            ></canvas>
 		</div>
 		<div class="col-start-11 col-end-13">
 			<div class="m-4">
