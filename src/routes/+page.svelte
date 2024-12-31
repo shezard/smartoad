@@ -4,21 +4,16 @@
 	import Textarea from '$lib/components/ui/textarea/textarea.svelte';
 	import UniversalNode from '$lib/node/UniversalNode.svelte';
 
-	let nodeStates = $state([
-		{
-			value: null
-		},
-		{
-			value: null
-		},
-		{
-			value: null
-		}
-	]);
+	let nodeStates = $state([]);
+
+	function updater(updatedNodeStates) {
+		nodeStates = updatedNodeStates;
+		return nodeStates;
+	}
 
 	let selectedNodeIndex = $state(0);
 
-	const graph = createGraph(nodeStates);
+	const graph = createGraph(nodeStates, updater);
 </script>
 
 <div class="divide-y">
@@ -44,18 +39,23 @@
 			></canvas>
 		</div>
 		<div class="col-start-11 col-end-13">
-			<div class="m-4 flex flex-col gap-2">
-				<div class="capitalize">
-					{graph.nodes[selectedNodeIndex].type}
+			{#if nodeStates.length}
+				<div class="m-4 flex flex-col gap-2">
+					<div class="capitalize">
+						{graph.nodes[selectedNodeIndex].type}
+						<span class="text-sm text-muted">{selectedNodeIndex}</span>
+					</div>
+					<div>
+						{#if graph.nodes[selectedNodeIndex].type === 'prompt'}
+							<Textarea bind:value={nodeStates[selectedNodeIndex].values[0]} />
+						{:else}
+							{#each nodeStates[selectedNodeIndex].values as value}
+								{value}
+							{/each}
+						{/if}
+					</div>
 				</div>
-				<div>
-					{#if graph.nodes[selectedNodeIndex].type === 'prompt'}
-						<Textarea bind:value={nodeStates[selectedNodeIndex].value} />
-					{:else}
-						{nodeStates[selectedNodeIndex].value}
-					{/if}
-				</div>
-			</div>
+			{/if}
 		</div>
 	</div>
 </div>

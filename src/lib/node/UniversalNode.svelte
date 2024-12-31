@@ -5,20 +5,20 @@
 	import { LoaderCircle, Play, Circle } from 'lucide-svelte';
 	import type { Exec } from '$lib/graph';
 
-	let lastValue: string | null = null;
+	let lastValues: string[] = [];
 
 	let {
 		index,
 		selectedNodeIndex = $bindable(),
 		exec,
 		type,
-		value = $bindable()
+		values = $bindable()
 	}: {
 		index: number;
 		selectedNodeIndex: number;
 		exec: Exec;
 		type: string;
-		value: string | null;
+		values: string[];
 	} = $props();
 
 	let isLoading = $state(false);
@@ -26,14 +26,14 @@
 	$effect(callExec);
 
 	function callExec() {
-		if (!value || type === 'prompt') {
+		if (!values.length || type === 'prompt') {
 			return;
 		}
 
 		isLoading = true;
-		exec(value, index)
+		exec(values, index)
 			?.then(() => {
-				lastValue = value;
+				lastValues = values;
 				isLoading = false;
 			})
 			.catch((e) => {
@@ -67,7 +67,7 @@
 				<Circle class="h-2 w-2" id="input-{index}" />
 			</div>
 		</div>
-		<Button variant="outline" size="icon" onclick={() => !isLoading && exec(value, index)}>
+		<Button variant="outline" size="icon" onclick={() => !isLoading && exec(values, index)}>
 			{#if isLoading}
 				<LoaderCircle class="h-4 w-4 animate-spin" />
 			{:else}

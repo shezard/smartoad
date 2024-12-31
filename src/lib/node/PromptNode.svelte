@@ -9,12 +9,12 @@
 		index,
 		selectedNodeIndex = $bindable(),
 		exec,
-		value = $bindable()
+		values = $bindable()
 	}: {
 		index: number;
 		selectedNodeIndex: number;
 		exec: Exec;
-		value: string;
+		values: string[];
 	} = $props();
 
 	let isLoading = $state(false);
@@ -40,7 +40,7 @@
 	</Card.Header>
 	<Card.Content class="flex flex-col gap-2">
 		<!-- <Textarea bind:value></Textarea> -->
-		<Button variant="outline" size="icon" onclick={() => !isLoading && exec(value, index)}>
+		<Button variant="outline" size="icon" onclick={() => !isLoading && exec(values, index)}>
 			{#if isLoading}
 				<LoaderCircle class="h-4 w-4 animate-spin" />
 			{:else}
