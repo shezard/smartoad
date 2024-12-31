@@ -4,7 +4,7 @@
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { LoaderCircle, Play, Circle } from 'lucide-svelte';
 	import Textarea from '$lib/components/ui/textarea/textarea.svelte';
-	import type { Exec } from '$lib/types/Graph';
+	import type { Exec } from '$lib/graph';
 
 	let {
 		index,
@@ -22,13 +22,13 @@
 <Card.Root id="node-{index}">
 	<Card.Header>
 		<Card.Title>
-            <div class="inline-flex items-center gap-2 w-full">
-                <span>Prompt Node</span>
-                <span class="text-sm text-muted">{index}</span>
-                <span class="ml-auto">
-                    <Circle class="h-2 w-2" id="output-{index}"/>
-                </span>
-            </div>
+			<div class="inline-flex w-full items-center gap-2">
+				<span>Prompt Node</span>
+				<span class="text-sm text-muted">{index}</span>
+				<span class="ml-auto">
+					<Circle class="h-2 w-2" id="output-{index}" />
+				</span>
+			</div>
 		</Card.Title>
 	</Card.Header>
 	<Card.Content class="flex flex-col gap-2">

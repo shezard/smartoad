@@ -3,7 +3,7 @@
 
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Circle, LoaderCircle, Play } from 'lucide-svelte';
-	import type { Exec } from '$lib/types/Graph';
+	import type { Exec } from '$lib/graph';
 
 	let lastValue: string | null = null;
 
@@ -45,9 +45,9 @@
 		</Card.Title>
 	</Card.Header>
 	<Card.Content class="flex flex-col gap-2">
-        <div class="flex flex-row gap-2 items-center">
-            <Circle class="h-2 w-2" id="input-{index}"/> Input: {value}
-        </div>
+		<div class="flex flex-row items-center gap-2">
+			<Circle class="h-2 w-2" id="input-{index}" /> Input: {value}
+		</div>
 		<Button variant="outline" size="icon" onclick={() => !isLoading && callExec()}>
 			{#if isLoading}
 				<LoaderCircle class="h-4 w-4 animate-spin" />

@@ -1,7 +1,7 @@
 export default async function grid(element: HTMLDivElement) {
 	const { GridStack } = await import('gridstack');
 	const grid = GridStack.init({
-		disableResize: true,
+		disableResize: true
 	});
 
 	for (const node of element.children) {
