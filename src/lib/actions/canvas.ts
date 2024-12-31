@@ -4,7 +4,7 @@ function getXY(type: 'input' | 'output', index: number) {
 	const rect = document.querySelector(`#${type}-${index}`)?.getBoundingClientRect();
 
 	if (!rect) {
-		throw new Error(`No rect found for node-${index}`);
+		throw new Error(`No rect found for ${type}-${index}`);
 	}
 
 	// TODO : need a better way to calculate offset

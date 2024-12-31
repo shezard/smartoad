@@ -40,13 +40,21 @@
 <Card.Root id="node-{index}">
 	<Card.Header>
 		<Card.Title>
-			Basic Node
-			<span class="text-sm text-muted">{index}</span>
+            <div class="inline-flex w-full items-center gap-2">
+				<span>Basic Node</span>
+				<span class="text-sm text-muted">{index}</span>
+				<span class="ml-auto">
+					<Circle class="h-2 w-2" id="output-{index}" />
+				</span>
+			</div>
 		</Card.Title>
 	</Card.Header>
 	<Card.Content class="flex flex-col gap-2">
-		<div class="flex flex-row items-center gap-2">
-			<Circle class="h-2 w-2" id="input-{index}" /> Input: {value}
+		<div class="flex flex-row gap-2">
+			<div>
+                <Circle class="h-2 w-2" id="input-{index}" />
+            </div>
+            Input: {value}
 		</div>
 		<Button variant="outline" size="icon" onclick={() => !isLoading && callExec()}>
 			{#if isLoading}

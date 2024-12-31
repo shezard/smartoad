@@ -50,8 +50,16 @@ export function createGraph(nodeStates) {
 						});
 					}
 				}
+			},
+            {
+				component: BasicNode,
+				props: {
+					exec: (value: string, index: number) => {
+						// no-op
+					}
+				}
 			}
 		],
-		links: [[0, 1]]
+		links: [[0, 1], [1, 2]]
 	} satisfies Graph;
 }
