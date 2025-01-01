@@ -36,7 +36,7 @@
 			</div>
 			<canvas
 				class="pointer-events-none absolute left-0 top-0 h-full w-full bg-transparent"
-				use:canvas={graph}
+				use:canvas={nodeStates}
 			></canvas>
 		</div>
 		<div class="col-start-11 col-end-13">
@@ -45,6 +45,12 @@
 					<div class="capitalize">
 						{graph.nodes[selectedNodeIndex].type}
 						<span class="text-sm text-muted">{selectedNodeIndex}</span>
+						{#if nodeStates[selectedNodeIndex].inputs.length}
+							In: {nodeStates[selectedNodeIndex].inputs}
+						{/if}
+						{#if nodeStates[selectedNodeIndex].outputs.length}
+							Out: {nodeStates[selectedNodeIndex].outputs}
+						{/if}
 					</div>
 					<div>
 						{#if graph.nodes[selectedNodeIndex].type === 'prompt'}
@@ -59,7 +65,11 @@
 					</div>
 					<div class="flex flex-col gap-2">
 						Exec
-						<Textarea bind:value={nodeStates[selectedNodeIndex].exec} />
+						<Textarea
+							bind:value={nodeStates[selectedNodeIndex].exec}
+							style="font-family:monospace"
+							class="text-xs"
+						/>
 					</div>
 				</div>
 			{/if}

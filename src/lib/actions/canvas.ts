@@ -1,36 +1,41 @@
-import type { Graph } from '$lib/graph';
+import type { NodeState } from '$lib/graph';
 
-function getXY(type: 'input' | 'output', index: number) {
-	const rect = document.querySelector(`#${type}-${index}`)?.getBoundingClientRect();
+function getXY(type: 'input' | 'output', firstIndex: number, secondIndex: number) {
+	const rect = document
+		.querySelector(`#${type}-${firstIndex}-${secondIndex}`)
+		?.getBoundingClientRect();
 
 	if (!rect) {
-		throw new Error(`No rect found for ${type}-${index}`);
+		throw new Error(`No rect found for ${type}-${firstIndex}-${secondIndex}`);
 	}
 
 	// TODO : need a better way to calculate offset
 	return [rect.x - rect.width / 2 + 8, rect.y - rect.height / 2 - 56];
 }
 
-function update(context: CanvasRenderingContext2D, graph: Graph) {
+function update(context: CanvasRenderingContext2D, nodeStates: NodeState[]) {
 	requestAnimationFrame(() => {
 		context.clearRect(0, 0, 2000, 2000);
-		graph.links.forEach(([start, end]) => {
-			const [startX, startY] = getXY('output', start);
-			const [endX, endY] = getXY('input', end);
 
-			context.strokeStyle = '#fff';
-			context.beginPath();
-			context.moveTo(startX, startY);
-			context.lineTo(endX, endY);
-			context.closePath();
-			context.stroke();
+		nodeStates.forEach((nodeState, index) => {
+			nodeState.outputs.forEach((output) => {
+				const [startX, startY] = getXY('output', index, output);
+				const [endX, endY] = getXY('input', output, index);
+
+				context.strokeStyle = '#fff';
+				context.beginPath();
+				context.moveTo(startX, startY);
+				context.lineTo(endX, endY);
+				context.closePath();
+				context.stroke();
+			});
 		});
 
-		update(context, graph);
+		update(context, nodeStates);
 	});
 }
 
-export default function canvas(element: HTMLCanvasElement, graph: Graph) {
+export default function canvas(element: HTMLCanvasElement, nodeStates: NodeState[]) {
 	const parentWidth = element.parentElement?.clientWidth ?? 0;
 	const parentHeight = element.parentElement?.clientHeight ?? 0;
 
@@ -42,5 +47,5 @@ export default function canvas(element: HTMLCanvasElement, graph: Graph) {
 		throw new Error('No context found');
 	}
 
-	update(context, graph);
+	update(context, nodeStates);
 }

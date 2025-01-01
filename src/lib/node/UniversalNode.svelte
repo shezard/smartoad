@@ -15,7 +15,9 @@
 		type,
 		values = $bindable(),
 		nodeStates = $bindable(),
-		graph
+		graph,
+		inputs,
+		outputs
 	}: {
 		index: number;
 		selectedNodeIndex: number;
@@ -24,6 +26,8 @@
 		values: string[];
 		nodeStates: NodeState[];
 		graph: Graph;
+		inputs: string[];
+		outputs: string[];
 	} = $props();
 
 	let isLoading = $state(false);
@@ -100,7 +104,9 @@
 				<span class="capitalize">{type}</span>
 				<span class="text-sm text-muted">{index}</span>
 				<span class="ml-auto">
-					<Circle class="h-2 w-2" id="output-{index}" />
+					{#each outputs as output}
+						<Circle class="h-2 w-2" id="output-{index}-{output}" />
+					{/each}
 				</span>
 			</div>
 		</Card.Title>
@@ -108,7 +114,9 @@
 	<Card.Content class="flex flex-col gap-2">
 		<div class="flex flex-row gap-2">
 			<div>
-				<Circle class="h-2 w-2" id="input-{index}" />
+				{#each inputs as input}
+					<Circle class="h-2 w-2" id="input-{index}-{input}" />
+				{/each}
 			</div>
 		</div>
 		<Button variant="outline" size="icon" onclick={() => !isLoading && execExec(index)}>
