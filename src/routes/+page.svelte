@@ -28,7 +28,6 @@
 						{index}
 						bind:selectedNodeIndex
 						type={node.type}
-						{...node.props}
 						{...nodeStates[index]}
 					/>
 				{/each}
@@ -58,7 +57,7 @@
 					</div>
 					<div class="flex flex-col gap-2">
 						Exec
-						<Textarea value={graph.nodes[selectedNodeIndex].props.exec.toString()} />
+						<Textarea value={nodeStates[selectedNodeIndex].exec.toString()} />
 					</div>
 				</div>
 			{/if}

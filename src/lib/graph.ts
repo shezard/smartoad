@@ -3,9 +3,6 @@ import { askQuestion } from '$lib/ollama';
 export type Graph = {
 	nodes: {
 		type: 'prompt' | 'basic';
-		props: {
-			exec: Exec;
-		};
 	}[];
 	links: Link[];
 };
@@ -14,7 +11,7 @@ export type Link = [number, number];
 
 export type Exec = (index: number) => void | Promise<void>;
 
-export type NodeState = { values: string[] };
+export type NodeState = { values: string[]; exec: Exec };
 
 export function createGraph(
 	nodeStates: NodeState[],
@@ -23,55 +20,16 @@ export function createGraph(
 	const graph = {
 		nodes: [
 			{
-				type: 'prompt',
-				props: {
-					exec: (index) => {
-						const value = getValue(index, 0);
-						setOutput(index, 0, value);
-						setOutput(index, 1, value);
-					}
-				}
+				type: 'prompt'
 			},
 			{
-				type: 'basic',
-				props: {
-					exec: (index) => {
-						let text = '';
-						return new Promise((resolve) => {
-							const value = getValue(index, 0);
-							askQuestion(
-								value,
-								(part: string) => {
-									text += part;
-								},
-								() => {
-									setOutput(index, 0, text);
-									resolve();
-								}
-							);
-						});
-					}
-				}
+				type: 'basic'
 			},
 			{
-				type: 'basic',
-				props: {
-					exec: (index) => {
-						const value = getValue(index, 0);
-						setOutput(index, 0, value);
-						return Promise.resolve();
-					}
-				}
+				type: 'basic'
 			},
 			{
-				type: 'basic',
-				props: {
-					exec: (index) => {
-						const value0 = getValue(index, 0);
-						const value1 = getValue(index, 1);
-						return Promise.resolve();
-					}
-				}
+				type: 'basic'
 			}
 		],
 		links: [
@@ -112,9 +70,44 @@ export function createGraph(
 		}
 	}
 
-	const initialNodeStates = graph.nodes.map(() => {
+	const initialExecs = [
+		function (index: number) {
+			const value = getValue(index, 0);
+			setOutput(index, 0, value);
+			setOutput(index, 1, value);
+		},
+		function (index: number) {
+			let text = '';
+			return new Promise<void>((resolve) => {
+				const value = getValue(index, 0);
+				askQuestion(
+					value,
+					(part: string) => {
+						text += part;
+					},
+					() => {
+						setOutput(index, 0, text);
+						resolve();
+					}
+				);
+			});
+		},
+		function (index: number) {
+			const value = getValue(index, 0);
+			setOutput(index, 0, value);
+			return Promise.resolve();
+		},
+		function (index: number) {
+			const value0 = getValue(index, 0);
+			const value1 = getValue(index, 1);
+			return Promise.resolve();
+		}
+	];
+
+	const initialNodeStates = graph.nodes.map((node, index) => {
 		return {
-			values: []
+			values: [],
+			exec: initialExecs[index]
 		};
 	});
 
