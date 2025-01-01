@@ -67,6 +67,80 @@
 	let selectedNodeIndex = $state(0);
 
 	populateState(nodes, nodeStates, links, updater);
+
+	function updateInputLinks(e: Event & { currentTarget: EventTarget & HTMLSelectElement }) {
+		let selectedOptions = Array.from(e.currentTarget.selectedOptions).map(({ value }) => value);
+
+		let updatedLinks = links.filter(([_, end]) => {
+			return end !== selectedNodeIndex;
+		});
+
+		updatedLinks = [
+			...updatedLinks,
+			...selectedOptions.map((index) => {
+				return [Number(index), selectedNodeIndex] as Link;
+			})
+		];
+
+		links = updatedLinks;
+
+		const updatedNodeStates = nodeStates.map((nodeState, index) => {
+			(nodeState.inputs = links
+				.filter(([_, end]) => {
+					return end === index;
+				})
+				.map(([start, _]) => {
+					return start;
+				})),
+				(nodeState.outputs = links
+					.filter(([start, _]) => {
+						return start === index;
+					})
+					.map(([_, end]) => {
+						return end;
+					}));
+			return nodeState;
+		});
+
+		nodeStates = updater(updatedNodeStates);
+	}
+
+	function updateOutputLinks(e: Event & { currentTarget: EventTarget & HTMLSelectElement }) {
+		let selectedOptions = Array.from(e.currentTarget.selectedOptions).map(({ value }) => value);
+
+		let updatedLinks = links.filter(([start, _]) => {
+			return start !== selectedNodeIndex;
+		});
+
+		updatedLinks = [
+			...updatedLinks,
+			...selectedOptions.map((index) => {
+				return [selectedNodeIndex, Number(index)] as Link;
+			})
+		];
+
+		links = updatedLinks;
+
+		const updatedNodeStates = nodeStates.map((nodeState, index) => {
+			(nodeState.inputs = links
+				.filter(([_, end]) => {
+					return end === index;
+				})
+				.map(([start, _]) => {
+					return start;
+				})),
+				(nodeState.outputs = links
+					.filter(([start, _]) => {
+						return start === index;
+					})
+					.map(([_, end]) => {
+						return end;
+					}));
+			return nodeState;
+		});
+
+		nodeStates = updater(updatedNodeStates);
+	}
 </script>
 
 <div class="divide-y">
@@ -94,15 +168,39 @@
 		<div class="col-start-11 col-end-13">
 			{#if nodeStates.length}
 				<div class="m-4 flex flex-col gap-2">
-					<div class="capitalize">
+					<div class="flex items-center gap-2 capitalize">
 						{nodeStates[selectedNodeIndex].type}
 						<span class="text-sm text-muted">{selectedNodeIndex}</span>
-						{#if nodeStates[selectedNodeIndex].inputs.length}
-							In: {nodeStates[selectedNodeIndex].inputs}
-						{/if}
-						{#if nodeStates[selectedNodeIndex].outputs.length}
-							Out: {nodeStates[selectedNodeIndex].outputs}
-						{/if}
+						<span class="ml-auto">
+							In:
+							<select multiple onchange={updateInputLinks}>
+								{#each nodeStates as _, index}
+									<option
+										value={index}
+										selected={nodeStates[selectedNodeIndex].inputs.includes(
+											index
+										)}
+										disabled={selectedNodeIndex === index}
+									>
+										{index}
+									</option>
+								{/each}
+							</select>
+							Out:
+							<select multiple onchange={updateOutputLinks}>
+								{#each nodeStates as _, index}
+									<option
+										value={index}
+										selected={nodeStates[selectedNodeIndex].outputs.includes(
+											index
+										)}
+										disabled={selectedNodeIndex === index}
+									>
+										{index}
+									</option>
+								{/each}
+							</select>
+						</span>
 					</div>
 					<div>
 						{#if nodeStates[selectedNodeIndex].type === 'prompt'}
