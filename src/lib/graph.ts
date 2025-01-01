@@ -58,7 +58,7 @@ export function createGraph(
 				props: {
 					exec: (index) => {
 						const value = getValue(index, 0);
-						setOutput(index, 0, 'some stuff');
+						setOutput(index, 0, value);
 						return Promise.resolve();
 					}
 				}

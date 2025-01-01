@@ -4,7 +4,7 @@
 	import Textarea from '$lib/components/ui/textarea/textarea.svelte';
 	import UniversalNode from '$lib/node/UniversalNode.svelte';
 
-	let nodeStates : NodeState[] = $state([]);
+	let nodeStates: NodeState[] = $state([]);
 
 	function updater(updatedNodeStates: NodeState[]) {
 		nodeStates = updatedNodeStates;
@@ -50,9 +50,15 @@
 							<Textarea bind:value={nodeStates[selectedNodeIndex].values[0]} />
 						{:else}
 							{#each nodeStates[selectedNodeIndex].values as value}
-								{value}
+								<div>
+									{value}
+								</div>
 							{/each}
 						{/if}
+					</div>
+					<div class="flex flex-col gap-2">
+						Exec
+						<Textarea value={graph.nodes[selectedNodeIndex].props.exec.toString()} />
 					</div>
 				</div>
 			{/if}
