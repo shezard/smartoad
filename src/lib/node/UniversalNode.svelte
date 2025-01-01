@@ -3,7 +3,7 @@
 
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { LoaderCircle, Play, Circle } from 'lucide-svelte';
-	import type { Graph, NodeState } from '$lib/graph';
+	import type { Link, NodeState } from '$lib/graph';
 	import { askQuestion } from '$lib/ollama';
 
 	let lastValues: string[] = [];
@@ -15,7 +15,7 @@
 		type,
 		values = $bindable(),
 		nodeStates = $bindable(),
-		graph,
+		links,
 		inputs,
 		outputs
 	}: {
@@ -25,9 +25,9 @@
 		type: string;
 		values: string[];
 		nodeStates: NodeState[];
-		graph: Graph;
-		inputs: string[];
-		outputs: string[];
+		links: Link[];
+		inputs: number[];
+		outputs: number[];
 	} = $props();
 
 	let isLoading = $state(false);
@@ -57,7 +57,7 @@
 		}
 
 		function setOutput(stateIndex: number, value: string) {
-			const outputNodes = graph.links
+			const outputNodes = links
 				.filter(([start, _]) => {
 					return start === index;
 				})
@@ -68,7 +68,7 @@
 			const targetNodeIndex = outputNodes[stateIndex];
 
 			if (targetNodeIndex != null) {
-				const inputNodes = graph.links
+				const inputNodes = links
 					.filter(([_, end]) => {
 						return end === targetNodeIndex;
 					})
@@ -82,12 +82,13 @@
 			}
 		}
 
-		return new Function('index', 'getValue', 'setOutput', 'askQuestion', `return ${exec}`)(
-			index,
-			getValue,
-			setOutput,
-			askQuestion
-		)();
+		return new Function(
+			'index',
+			'getValue',
+			'setOutput',
+			'askQuestion',
+			`return function ${exec}`
+		)(index, getValue, setOutput, askQuestion)();
 	}
 </script>
 
