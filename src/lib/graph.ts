@@ -11,7 +11,7 @@ export type Link = [number, number];
 
 export type Exec = (index: number) => void | Promise<void>;
 
-export type NodeState = { values: string[]; exec: Exec };
+export type NodeState = { values: string[]; exec: string };
 
 export function createGraph(
 	nodeStates: NodeState[],
@@ -71,12 +71,12 @@ export function createGraph(
 	}
 
 	const initialExecs = [
-		function (index: number) {
+		function f() {
 			const value = getValue(index, 0);
 			setOutput(index, 0, value);
 			setOutput(index, 1, value);
 		},
-		function (index: number) {
+		function f() {
 			let text = '';
 			return new Promise<void>((resolve) => {
 				const value = getValue(index, 0);
@@ -92,22 +92,22 @@ export function createGraph(
 				);
 			});
 		},
-		function (index: number) {
+		function f() {
 			const value = getValue(index, 0);
 			setOutput(index, 0, value);
 			return Promise.resolve();
 		},
-		function (index: number) {
+		function f() {
 			const value0 = getValue(index, 0);
 			const value1 = getValue(index, 1);
 			return Promise.resolve();
 		}
 	];
 
-	const initialNodeStates = graph.nodes.map((node, index) => {
+	const initialNodeStates = graph.nodes.map((_, index) => {
 		return {
 			values: [],
-			exec: initialExecs[index]
+			exec: initialExecs[index].toString()
 		};
 	});
 

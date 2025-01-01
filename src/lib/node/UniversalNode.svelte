@@ -3,22 +3,27 @@
 
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { LoaderCircle, Play, Circle } from 'lucide-svelte';
-	import type { Exec } from '$lib/graph';
+	import type { Graph, NodeState } from '$lib/graph';
+	import { askQuestion } from '$lib/ollama';
 
 	let lastValues: string[] = [];
 
 	let {
 		index,
 		selectedNodeIndex = $bindable(),
-		exec,
+		exec = $bindable(),
 		type,
-		values = $bindable()
+		values = $bindable(),
+        nodeStates = $bindable(),
+        graph,
 	}: {
 		index: number;
 		selectedNodeIndex: number;
-		exec: Exec;
+		exec: string;
 		type: string;
 		values: string[];
+        nodeStates: NodeState[],
+        graph: Graph,
 	} = $props();
 
 	let isLoading = $state(false);
@@ -31,16 +36,54 @@
 		}
 
 		isLoading = true;
-		exec(index)
-			?.then(() => {
+        execExec(index)?.then(() => {
 				lastValues = values;
 				isLoading = false;
 			})
-			.catch((e) => {
+			.catch((e: unknown) => {
 				// TODO : toast ?
 				console.error(e);
 			});
-	}
+    }
+
+    function execExec(index: number) {
+
+        function getValue(index: number, stateIndex: number) {
+            return values[stateIndex];
+        }
+
+        function setOutput(index: number, stateIndex: number, value: string) {
+            const outputNodes = graph.links
+                .filter(([start, _]) => {
+                    return start === index;
+                })
+                .map(([_, end]) => {
+                    return end;
+                });
+
+            const targetNodeIndex = outputNodes[stateIndex];
+
+            if (targetNodeIndex != null) {
+                const inputNodes = graph.links
+                    .filter(([_, end]) => {
+                        return end === targetNodeIndex;
+                    })
+                    .map(([start, _]) => {
+                        return start;
+                    });
+
+                const targetStateIndex = inputNodes.indexOf(index);
+
+                nodeStates[targetNodeIndex].values[targetStateIndex] = value;
+            }
+        }
+
+        // TODO : add askQuestion
+        return (
+            new Function('index', 'getValue', 'setOutput', 'askQuestion', `return ${exec}`)(index, getValue, setOutput, askQuestion)
+        )();
+    }
+
 </script>
 
 <Card.Root
@@ -67,7 +110,7 @@
 				<Circle class="h-2 w-2" id="input-{index}" />
 			</div>
 		</div>
-		<Button variant="outline" size="icon" onclick={() => !isLoading && exec(index)}>
+		<Button variant="outline" size="icon" onclick={() => !isLoading && execExec(index)}>
 			{#if isLoading}
 				<LoaderCircle class="h-4 w-4 animate-spin" />
 			{:else}
