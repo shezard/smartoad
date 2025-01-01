@@ -40,66 +40,36 @@ export function createGraph(
 		]
 	} satisfies Graph;
 
-	function getValue(index: number, stateIndex: number) {
-		return nodeStates[index].values[stateIndex];
-	}
-
-	function setOutput(index: number, stateIndex: number, value: string) {
-		const outputNodes = graph.links
-			.filter(([start, _]) => {
-				return start === index;
-			})
-			.map(([_, end]) => {
-				return end;
-			});
-
-		const targetNodeIndex = outputNodes[stateIndex];
-
-		if (targetNodeIndex != null) {
-			const inputNodes = graph.links
-				.filter(([_, end]) => {
-					return end === targetNodeIndex;
-				})
-				.map(([start, _]) => {
-					return start;
-				});
-
-			const targetStateIndex = inputNodes.indexOf(index);
-
-			nodeStates[targetNodeIndex].values[targetStateIndex] = value;
-		}
-	}
-
 	const initialExecs = [
 		function f() {
-			const value = getValue(index, 0);
-			setOutput(index, 0, value);
-			setOutput(index, 1, value);
+			const value = getValue(0);
+			setOutput(0, value);
+			setOutput(1, value);
 		},
 		function f() {
 			let text = '';
 			return new Promise<void>((resolve) => {
-				const value = getValue(index, 0);
+				const value = getValue(0);
 				askQuestion(
 					value,
 					(part: string) => {
 						text += part;
 					},
 					() => {
-						setOutput(index, 0, text);
+						setOutput(0, text);
 						resolve();
 					}
 				);
 			});
 		},
 		function f() {
-			const value = getValue(index, 0);
-			setOutput(index, 0, value);
+			const value = getValue(0);
+			setOutput(0, value);
 			return Promise.resolve();
 		},
 		function f() {
-			const value0 = getValue(index, 0);
-			const value1 = getValue(index, 1);
+			const value0 = getValue(0);
+			const value1 = getValue(1);
 			return Promise.resolve();
 		}
 	];

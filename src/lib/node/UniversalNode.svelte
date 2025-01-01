@@ -14,16 +14,16 @@
 		exec = $bindable(),
 		type,
 		values = $bindable(),
-        nodeStates = $bindable(),
-        graph,
+		nodeStates = $bindable(),
+		graph
 	}: {
 		index: number;
 		selectedNodeIndex: number;
 		exec: string;
 		type: string;
 		values: string[];
-        nodeStates: NodeState[],
-        graph: Graph,
+		nodeStates: NodeState[];
+		graph: Graph;
 	} = $props();
 
 	let isLoading = $state(false);
@@ -36,7 +36,8 @@
 		}
 
 		isLoading = true;
-        execExec(index)?.then(() => {
+		execExec(index)
+			?.then(() => {
 				lastValues = values;
 				isLoading = false;
 			})
@@ -44,46 +45,46 @@
 				// TODO : toast ?
 				console.error(e);
 			});
-    }
+	}
 
-    function execExec(index: number) {
+	function execExec(index: number) {
+		function getValue(stateIndex: number) {
+			return values[stateIndex];
+		}
 
-        function getValue(index: number, stateIndex: number) {
-            return values[stateIndex];
-        }
+		function setOutput(stateIndex: number, value: string) {
+			const outputNodes = graph.links
+				.filter(([start, _]) => {
+					return start === index;
+				})
+				.map(([_, end]) => {
+					return end;
+				});
 
-        function setOutput(index: number, stateIndex: number, value: string) {
-            const outputNodes = graph.links
-                .filter(([start, _]) => {
-                    return start === index;
-                })
-                .map(([_, end]) => {
-                    return end;
-                });
+			const targetNodeIndex = outputNodes[stateIndex];
 
-            const targetNodeIndex = outputNodes[stateIndex];
+			if (targetNodeIndex != null) {
+				const inputNodes = graph.links
+					.filter(([_, end]) => {
+						return end === targetNodeIndex;
+					})
+					.map(([start, _]) => {
+						return start;
+					});
 
-            if (targetNodeIndex != null) {
-                const inputNodes = graph.links
-                    .filter(([_, end]) => {
-                        return end === targetNodeIndex;
-                    })
-                    .map(([start, _]) => {
-                        return start;
-                    });
+				const targetStateIndex = inputNodes.indexOf(index);
 
-                const targetStateIndex = inputNodes.indexOf(index);
+				nodeStates[targetNodeIndex].values[targetStateIndex] = value;
+			}
+		}
 
-                nodeStates[targetNodeIndex].values[targetStateIndex] = value;
-            }
-        }
-
-        // TODO : add askQuestion
-        return (
-            new Function('index', 'getValue', 'setOutput', 'askQuestion', `return ${exec}`)(index, getValue, setOutput, askQuestion)
-        )();
-    }
-
+		return new Function('index', 'getValue', 'setOutput', 'askQuestion', `return ${exec}`)(
+			index,
+			getValue,
+			setOutput,
+			askQuestion
+		)();
+	}
 </script>
 
 <Card.Root

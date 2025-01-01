@@ -27,10 +27,10 @@
 					<UniversalNode
 						{index}
 						bind:selectedNodeIndex
-                        bind:nodeStates
+						bind:nodeStates
 						type={node.type}
 						{...nodeStates[index]}
-                        {graph}
+						{graph}
 					/>
 				{/each}
 			</div>
@@ -50,11 +50,11 @@
 						{#if graph.nodes[selectedNodeIndex].type === 'prompt'}
 							<Textarea bind:value={nodeStates[selectedNodeIndex].values[0]} />
 						{:else}
-                            <div class="flex flex-col gap-2">
-                                {#each nodeStates[selectedNodeIndex].values as value}
-                                    <Textarea value={value} disabled />
-                                {/each}
-                            </div>
+							<div class="flex flex-col gap-2">
+								{#each nodeStates[selectedNodeIndex].values as value}
+									<Textarea {value} disabled />
+								{/each}
+							</div>
 						{/if}
 					</div>
 					<div class="flex flex-col gap-2">
