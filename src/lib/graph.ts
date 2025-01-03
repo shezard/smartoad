@@ -4,7 +4,7 @@ export type Exec = (index: number) => void | Promise<void>;
 
 export type Node = {
 	type: 'prompt' | 'basic';
-	exec: Exec;
+	exec: string;
 };
 
 export type NodeState = {
@@ -25,7 +25,7 @@ export function populateState(
 		return {
 			type: node.type,
 			values: [],
-			exec: node.exec.toString(),
+			exec: node.exec,
 			inputs: links
 				.filter(([_, end]) => {
 					return end === index;

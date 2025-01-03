@@ -4,69 +4,48 @@
 	import Textarea from '$lib/components/ui/textarea/textarea.svelte';
 	import UniversalNode from '$lib/node/UniversalNode.svelte';
 
-	const nodes: Node[] = [
-		{
-			type: 'prompt',
-			exec: function () {
-				const value = getValue(0);
-				setOutput(0, value);
-				setOutput(1, value);
-			}
-		},
-		{
-			type: 'basic',
-			exec: function () {
-				let text = '';
-				return new Promise<void>((resolve) => {
-					const value = getValue(0);
-					askQuestion(
-						value,
-						(part: string) => {
-							text += part;
-						},
-						() => {
-							setOutput(0, text);
-							resolve();
-						}
-					);
-				});
-			}
-		},
-		{
-			type: 'basic',
-			exec: function () {
-				const value = getValue(0);
-				setOutput(0, value);
-				return Promise.resolve();
-			}
-		},
-		{
-			type: 'basic',
-			exec: function () {
-				const value0 = getValue(0);
-				const value1 = getValue(1);
-				return Promise.resolve();
-			}
-		}
-	];
+	import nodesData from '$lib/data/nodes.json';
+	import linksData from '$lib/data/links.json';
+	import CommandMenu from '$lib/components/CommandMenu.svelte';
+	import { onMount } from 'svelte';
 
-	let links: Link[] = $state([
-		[0, 1],
-		[0, 2],
-		[1, 3],
-		[2, 3]
-	]);
+	let nodes: Node[] = [...nodesData];
+	let links: Link[] = $state(linksData);
 
 	let nodeStates: NodeState[] = $state([]);
+
+	let selectedNodeIndex = $state(0);
 
 	function updater(updatedNodeStates: NodeState[]) {
 		nodeStates = updatedNodeStates;
 		return nodeStates;
 	}
 
-	let selectedNodeIndex = $state(0);
+	function addPrompt() {
+		nodes = [
+			...nodes,
+			{
+				type: 'prompt',
+				exec: ''
+			}
+		];
+		populateState(nodes, nodeStates, links, updater);
+	}
 
-	populateState(nodes, nodeStates, links, updater);
+	function addBasic() {
+		nodes = [
+			...nodes,
+			{
+				type: 'basic',
+				exec: ''
+			}
+		];
+		populateState(nodes, nodeStates, links, updater);
+	}
+
+	onMount(() => {
+		populateState(nodes, nodeStates, links, updater);
+	});
 
 	function updateInputLinks(e: Event & { currentTarget: EventTarget & HTMLSelectElement }) {
 		let selectedOptions = Array.from(e.currentTarget.selectedOptions).map(({ value }) => value);
@@ -150,7 +129,7 @@
 	<div class="grid h-screen w-full grid-cols-12 divide-x">
 		<div class="relative col-start-1 col-end-11">
 			<div class="m-4 grid grid-cols-10 gap-4">
-				{#each nodes as _, index}
+				{#each nodeStates as _, index}
 					<UniversalNode
 						{index}
 						bind:selectedNodeIndex
@@ -160,10 +139,12 @@
 					/>
 				{/each}
 			</div>
-			<canvas
-				class="pointer-events-none absolute left-0 top-0 h-full w-full bg-transparent"
-				use:canvas={nodeStates}
-			></canvas>
+			{#key nodeStates}
+				<canvas
+					class="pointer-events-none absolute left-0 top-0 h-full w-full bg-transparent"
+					use:canvas={nodeStates}
+				></canvas>
+			{/key}
 		</div>
 		<div class="col-start-11 col-end-13">
 			{#if nodeStates.length}
@@ -226,3 +207,5 @@
 		</div>
 	</div>
 </div>
+
+<CommandMenu {addPrompt} {addBasic} />

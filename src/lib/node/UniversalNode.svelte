@@ -82,13 +82,14 @@
 			}
 		}
 
-		return new Function(
-			'index',
-			'getValue',
-			'setOutput',
-			'askQuestion',
-			`return function ${exec}`
-		)(index, getValue, setOutput, askQuestion)();
+		console.log(`return ${exec}`);
+
+		return new Function('index', 'getValue', 'setOutput', 'askQuestion', `return ${exec}`)(
+			index,
+			getValue,
+			setOutput,
+			askQuestion
+		)();
 	}
 </script>
 

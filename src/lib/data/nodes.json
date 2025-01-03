@@ -1,0 +1,18 @@
+[
+	{
+		"type": "prompt",
+		"exec": "function () { const value = getValue(0); setOutput(0, value); setOutput(1, value); }"
+	},
+	{
+		"type": "basic",
+		"exec": "function () { let text = ''; return new Promise((resolve) => { const value = getValue(0); askQuestion( value, (part) => { text += part; }, () => { setOutput(0, text); resolve(); }); });}"
+	},
+	{
+		"type": "basic",
+		"exec": "function () { const value = getValue(0); setOutput(0, value); return Promise.resolve(); }"
+	},
+	{
+		"type": "basic",
+		"exec": "function () { const value0 = getValue(0); const value1 = getValue(1); return Promise.resolve(); }"
+	}
+]
