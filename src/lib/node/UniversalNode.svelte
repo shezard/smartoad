@@ -5,6 +5,7 @@
 	import { LoaderCircle, Play, Circle } from 'lucide-svelte';
 	import type { Link, NodeState } from '$lib/graph';
 	import { askQuestion } from '$lib/ollama';
+	import { fetchUrl } from '$lib/fetch';
 
 	let lastValues: string[] = [];
 
@@ -84,12 +85,14 @@
 
 		console.log(`return ${exec}`);
 
-		return new Function('index', 'getValue', 'setOutput', 'askQuestion', `return ${exec}`)(
-			index,
-			getValue,
-			setOutput,
-			askQuestion
-		)();
+		return new Function(
+			'index',
+			'getValue',
+			'setOutput',
+			'askQuestion',
+			'fetch',
+			`return ${exec}`
+		)(index, getValue, setOutput, askQuestion, fetchUrl)();
 	}
 </script>
 

@@ -14,6 +14,10 @@
 
 	let nodeStates: NodeState[] = $state([]);
 
+	function getNodeStates() {
+		return nodeStates;
+	}
+
 	let selectedNodeIndex = $state(0);
 
 	function updater(updatedNodeStates: NodeState[]) {
@@ -139,12 +143,10 @@
 					/>
 				{/each}
 			</div>
-			{#key nodeStates}
-				<canvas
-					class="pointer-events-none absolute left-0 top-0 h-full w-full bg-transparent"
-					use:canvas={nodeStates}
-				></canvas>
-			{/key}
+			<canvas
+				class="pointer-events-none absolute left-0 top-0 h-full w-full bg-transparent"
+				use:canvas={getNodeStates}
+			></canvas>
 		</div>
 		<div class="col-start-11 col-end-13">
 			{#if nodeStates.length}

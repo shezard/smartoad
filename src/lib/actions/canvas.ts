@@ -13,10 +13,11 @@ function getXY(type: 'input' | 'output', firstIndex: number, secondIndex: number
 	return [rect.x - rect.width / 2 + 8, rect.y - rect.height / 2 - 56];
 }
 
-function update(context: CanvasRenderingContext2D, nodeStates: NodeState[]) {
+function update(context: CanvasRenderingContext2D, getNodeStates: () => NodeState[]) {
 	requestAnimationFrame(() => {
 		context.clearRect(0, 0, 2000, 2000);
 
+		const nodeStates = getNodeStates();
 		nodeStates.forEach((nodeState, index) => {
 			nodeState.outputs.forEach((output) => {
 				const [startX, startY] = getXY('output', index, output);
@@ -31,11 +32,11 @@ function update(context: CanvasRenderingContext2D, nodeStates: NodeState[]) {
 			});
 		});
 
-		update(context, nodeStates);
+		update(context, getNodeStates);
 	});
 }
 
-export default function canvas(element: HTMLCanvasElement, nodeStates: NodeState[]) {
+export default function canvas(element: HTMLCanvasElement, getNodeStates: () => NodeState[]) {
 	const parentWidth = element.parentElement?.clientWidth ?? 0;
 	const parentHeight = element.parentElement?.clientHeight ?? 0;
 
@@ -47,5 +48,5 @@ export default function canvas(element: HTMLCanvasElement, nodeStates: NodeState
 		throw new Error('No context found');
 	}
 
-	update(context, nodeStates);
+	update(context, getNodeStates);
 }
